@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeaTime.Api.DataAccess;
-using TeaTime.Api.DataAccess.DbEntities;
 using TeaTime.Api.Domain.Stores;
+using TeaTime.Api.Services;
 
 namespace TeaTime.Api.Controllers
 {
@@ -9,30 +9,20 @@ namespace TeaTime.Api.Controllers
     [ApiController]
     public class StoresController : ControllerBase
     {
-        private readonly TeaTimeContext _context;
+        private readonly StoresService _service;
+        private readonly ILogger _logger;
 
-        public StoresController(TeaTimeContext context)
+        public StoresController(TeaTimeContext context, ILogger<StoresService> logger)
         {
-            _context = context;
+            _service = new StoresService(context, logger);
+            _logger = logger;
         }
 
         // GET: api/stores
         [HttpGet]
         public ActionResult<IEnumerable<Store>> GetStores()
         {
-            var results = _context.Stores.ToList();
-
-            var stores = new List<Store>();
-            foreach (var result in results)
-            {
-                stores.Add(new Store
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                    PhoneNumber = result.PhoneNumber,
-                    MenuUrl = result.MenuUrl
-                });
-            }
+            var stores = _service.GetStores();
 
             return Ok(stores);
         }
@@ -41,20 +31,12 @@ namespace TeaTime.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<Store> GetStore(long id)
         {
-            var result = _context.Stores.Find(id);
+            var store = _service.GetStoreAndReturn(id);
 
-            if (result == null)
+            if (store is null)
             {
                 return NotFound();
             }
-
-            var store = new Store
-            {
-                Id = result.Id,
-                Name = result.Name,
-                PhoneNumber = result.PhoneNumber,
-                MenuUrl = result.MenuUrl
-            };
 
             return Ok(store);
         }
@@ -63,27 +45,9 @@ namespace TeaTime.Api.Controllers
         [HttpPost]
         public IActionResult AddStore(StoreForCreation newStore)
         {
-            var maxId = _context.Stores.Any() ? _context.Stores.Max(s => s.Id) : 0;
-            var entity = new StoreEntity
-            {
-                Id = maxId + 1,
-                Name = newStore.Name,
-                PhoneNumber = newStore.PhoneNumber,
-                MenuUrl = newStore.MenuUrl
-            };
+            var storeForReturn = _service.AddStore(newStore);
 
-            _context.Stores.Add(entity);
-            _context.SaveChanges();
-
-            var storeForReturn = new Store
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                PhoneNumber = entity.PhoneNumber,
-                MenuUrl = entity.MenuUrl
-            };
-
-            return CreatedAtAction(nameof(GetStore), new { id = entity.Id }, storeForReturn);
+            return CreatedAtAction(nameof(GetStore), new { id = storeForReturn.Id }, storeForReturn);
         }
     }
 }
