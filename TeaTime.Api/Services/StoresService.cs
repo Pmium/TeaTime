@@ -4,7 +4,7 @@ using TeaTime.Api.Domain.Stores;
 
 namespace TeaTime.Api.Services
 {
-    public class StoresService
+    public class StoresService : IStoresService
     {
         private readonly TeaTimeContext _context;
         private readonly ILogger<StoresService> _logger;
@@ -78,6 +78,18 @@ namespace TeaTime.Api.Services
             };
 
             return storeForReturn;
+        }
+
+        public bool IsStoreExist(long id)
+        {
+            var isStoreExists = _context.Stores.Find(id) != null;
+
+            if (!isStoreExists)
+            {
+                _logger.LogWarning("商家代號 {storeId} 不存在", id);
+            }
+
+            return isStoreExists;
         }
     }
 }

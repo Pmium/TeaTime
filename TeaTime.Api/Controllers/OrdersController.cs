@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TeaTime.Api.DataAccess;
 using TeaTime.Api.Domain.Orders;
 using TeaTime.Api.Services;
 
@@ -9,19 +8,20 @@ namespace TeaTime.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly OrdersService _service;
+        private readonly IOrdersService _ordersService;
+        private readonly IStoresService _storesService;
 
-
-        public OrdersController(TeaTimeContext context, ILogger<OrdersService> logger)
+        public OrdersController(IOrdersService ordersService, IStoresService storesService)
         {
-            _service = new OrdersService(context, logger);
+            _ordersService = ordersService;
+            _storesService = storesService;
         }
 
         // GET: api/stores/1/orders
         [HttpGet]
         public ActionResult<IEnumerable<Order>> GetOrders(long storeId)
         {
-            var orders = _service.GetOrders(storeId);
+            var orders = _ordersService.GetOrders(storeId);
 
             return Ok(orders);
         }
@@ -30,7 +30,7 @@ namespace TeaTime.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<Order> GetOrder(long storeId, long id)
         {
-            var order = _service.GetOrder(storeId, id);
+            var order = _ordersService.GetOrder(storeId, id);
 
             if (order is null)
             {
@@ -45,13 +45,13 @@ namespace TeaTime.Api.Controllers
         public IActionResult AddOrder(long storeId, [FromBody] OrderForCreation newOrder)
         {
             // 先檢查商家是否存在
-            var isStoreExist = _service.IsStoreExist(storeId);
+            var isStoreExist = _storesService.IsStoreExist(storeId);
             if (!isStoreExist)
             {
                 return BadRequest("無法新增訂單，請與維護人員聯繫");
             }
 
-            var orderForReturn = _service.AddOrderAndReturn(storeId, newOrder);
+            var orderForReturn = _ordersService.AddOrderAndReturn(storeId, newOrder);
 
             return CreatedAtAction(nameof(GetOrder), new { storeId, id = orderForReturn.Id }, orderForReturn);
         }

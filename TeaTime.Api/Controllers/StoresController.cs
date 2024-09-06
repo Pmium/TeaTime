@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TeaTime.Api.DataAccess;
 using TeaTime.Api.Domain.Stores;
 using TeaTime.Api.Services;
 
@@ -9,13 +8,11 @@ namespace TeaTime.Api.Controllers
     [ApiController]
     public class StoresController : ControllerBase
     {
-        private readonly StoresService _service;
-        private readonly ILogger _logger;
+        private readonly IStoresService _service;
 
-        public StoresController(TeaTimeContext context, ILogger<StoresService> logger)
+        public StoresController(IStoresService service)
         {
-            _service = new StoresService(context, logger);
-            _logger = logger;
+            _service = service;
         }
 
         // GET: api/stores

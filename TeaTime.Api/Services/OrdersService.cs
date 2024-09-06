@@ -4,15 +4,17 @@ using TeaTime.Api.Domain.Orders;
 
 namespace TeaTime.Api.Services
 {
-    public class OrdersService
+    public class OrdersService : IOrdersService
     {
         private readonly TeaTimeContext _context;
         private readonly ILogger<OrdersService> _logger;
+        private readonly IStoresService _storesService;
 
-        public OrdersService(TeaTimeContext context, ILogger<OrdersService> logger)
+        public OrdersService(TeaTimeContext context, ILogger<OrdersService> logger, IStoresService storesService)
         {
             _context = context;
             _logger = logger;
+            _storesService = storesService;
         }
 
         public IEnumerable<Order> GetOrders(long storeId)
@@ -37,7 +39,7 @@ namespace TeaTime.Api.Services
         public Order? GetOrder(long storeId, long id)
         {
             // 先檢查商家是否存在
-            if (!IsStoreExist(storeId))
+            if (!_storesService.IsStoreExist(storeId))
             {
                 _logger.LogWarning("商家代號 {storeId} 不存在", storeId);
                 return null;
@@ -86,18 +88,6 @@ namespace TeaTime.Api.Services
             };
 
             return order;
-        }
-
-        public bool IsStoreExist(long storeId)
-        {
-            var isStoreExists = _context.Stores.Find(storeId) != null;
-
-            if (!isStoreExists)
-            {
-                _logger.LogWarning("商家代號 {storeId} 不存在，無法新增訂單", storeId);
-            }
-
-            return isStoreExists;
         }
     }
 }
