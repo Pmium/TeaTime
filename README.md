@@ -1,4 +1,4 @@
-# TeaTime# TeaTime
+# TeaTime
 
 ## Step 8 - 重構：隱藏資料細節
 
