@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TeaTime.Api.DataAccess;
+using TeaTime.Api.Services;
 
 namespace TeaTime.Api
 {
@@ -14,6 +15,9 @@ namespace TeaTime.Api
             {
                 options.UseInMemoryDatabase("TeaTimeDb");
             });
+
+            builder.Services.AddScoped<IStoresService, StoresService>();
+            builder.Services.AddScoped<IOrdersService, OrdersService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
