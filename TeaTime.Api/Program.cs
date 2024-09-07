@@ -21,8 +21,16 @@ namespace TeaTime.Api
             builder.Services.AddScoped<IStoresService, StoresService>();
             builder.Services.AddScoped<IOrdersService, OrdersService>();
 
-            builder.Services.AddScoped<IStoresRepository, OracleStoresRepository>();
-            builder.Services.AddScoped<IOrdersRepository, OracleOrdersRepository>();
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddScoped<IStoresRepository, InMemoryStoresRepository>();
+                builder.Services.AddScoped<IOrdersRepository, InMemoryOrdersRepository>();
+            }
+            else
+            {
+                builder.Services.AddScoped<IStoresRepository, OracleStoresRepository>();
+                builder.Services.AddScoped<IOrdersRepository, OracleOrdersRepository>();
+            }
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
