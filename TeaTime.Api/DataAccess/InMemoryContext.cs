@@ -3,9 +3,9 @@ using TeaTime.Api.DataAccess.DbEntities;
 
 namespace TeaTime.Api.DataAccess
 {
-    public class TeaTimeContext : DbContext
+    public class InMemoryContext : DbContext
     {
-        public TeaTimeContext(DbContextOptions<TeaTimeContext> options) : base(options)
+        public InMemoryContext(DbContextOptions<InMemoryContext> options) : base(options)
         {
         }
 

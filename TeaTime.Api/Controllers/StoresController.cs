@@ -28,7 +28,7 @@ namespace TeaTime.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<Store> GetStore(long id)
         {
-            var store = _service.GetStoreAndReturn(id);
+            var store = _service.GetStore(id);
 
             if (store is null)
             {
@@ -42,7 +42,7 @@ namespace TeaTime.Api.Controllers
         [HttpPost]
         public IActionResult AddStore(StoreForCreation newStore)
         {
-            var storeForReturn = _service.AddStore(newStore);
+            var storeForReturn = _service.AddStoreAndReturn(newStore);
 
             return CreatedAtAction(nameof(GetStore), new { id = storeForReturn.Id }, storeForReturn);
         }

@@ -1,8 +1,8 @@
 ﻿using TeaTime.Api.Domain.Stores;
 
-namespace TeaTime.Api.Services
+namespace TeaTime.Api.DataAccess.Repositories
 {
-    public interface IStoresService
+    public interface IStoresRepository
     {
         IEnumerable<Store> GetStores();
 

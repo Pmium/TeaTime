@@ -8,6 +8,6 @@ namespace TeaTime.Api.Services
 
         Order? GetOrder(long storeId, long id);
 
-        Order AddOrderAndReturn(long storeId, OrderForCreation newOrder);
+        Order? AddOrderAndReturn(long storeId, OrderForCreation newOrder);
     }
 }

@@ -44,14 +44,12 @@ namespace TeaTime.Api.Controllers
         [HttpPost]
         public IActionResult AddOrder(long storeId, [FromBody] OrderForCreation newOrder)
         {
-            // 先檢查商家是否存在
-            var isStoreExist = _storesService.IsStoreExist(storeId);
-            if (!isStoreExist)
+            var orderForReturn = _ordersService.AddOrderAndReturn(storeId, newOrder);
+
+            if (orderForReturn is null)
             {
                 return BadRequest("無法新增訂單，請與維護人員聯繫");
             }
-
-            var orderForReturn = _ordersService.AddOrderAndReturn(storeId, newOrder);
 
             return CreatedAtAction(nameof(GetOrder), new { storeId, id = orderForReturn.Id }, orderForReturn);
         }
