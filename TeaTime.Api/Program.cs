@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TeaTime.Api.DataAccess;
 using TeaTime.Api.DataAccess.Repositories;
+using TeaTime.Api.Middlewares;
 using TeaTime.Api.Services;
 
 namespace TeaTime.Api
@@ -50,6 +51,7 @@ namespace TeaTime.Api
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ApiAuthMiddleware>();
 
             app.MapControllers();
 
