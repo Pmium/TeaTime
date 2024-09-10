@@ -66,7 +66,7 @@ namespace TeaTime.Api.DataAccess.Repositories
             // 先取得 Id 的最大值
             var sql1 = "SELECT MAX(ID) FROM TEATIME_ORDER WHERE STOREID = :StoreId";
             var maxId = connection.QueryFirstOrDefault<long?>(sql1, new { StoreId = storeId });
-            var newId = (maxId ?? 0) + 1;
+            var newId = maxId ?? 0 + 1;
 
             var entity = new OrderEntity
             {

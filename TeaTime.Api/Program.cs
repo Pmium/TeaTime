@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TeaTime.Api.DataAccess;
 using TeaTime.Api.DataAccess.Repositories;
-using TeaTime.Api.Middlewares;
 using TeaTime.Api.Services;
 
 namespace TeaTime.Api
@@ -13,17 +12,14 @@ namespace TeaTime.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<InMemoryContext>(options =>
-            {
-                options.UseInMemoryDatabase("TeaTimeDb");
-            });
+            builder.Services.AddHttpClient();
 
             builder.Services.AddSingleton<OracleDbContext>();
             builder.Services.AddScoped<IStoresService, StoresService>();
             builder.Services.AddScoped<IOrdersService, OrdersService>();
 
-            builder.Services.AddScoped<IStoresRepository, OracleStoresRepository>();
-            builder.Services.AddScoped<IOrdersRepository, OracleOrdersRepository>();
+            builder.Services.AddScoped<IStoresRepository, ApiStoresRepository>();
+            builder.Services.AddScoped<IOrdersRepository, ApiOrdersRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,8 +38,6 @@ namespace TeaTime.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
-            app.UseMiddleware<ApiAuthMiddleware>();
 
             app.MapControllers();
 
